@@ -57,15 +57,15 @@ jobs:
               -e POSTGRES_DB=lab8 \
               postgres:15
 
-            # Run App
             docker run -d \
-              --name lab8-app \
-              --network lab8-net \
-              -p 3000:3000 \
-              -e DB_HOST=lab8-postgres \
-              -e DB_USER=postgres \
-              -e DB_PASS=secret \
-              -e DB_NAME=lab8 \
-              -e DB_PORT=5432 \
-              ${{ secrets.DOCKERHUB_USERNAME }}/lab8-app:latest
+            --name lab8-app \
+            --network lab8-net \
+            -p 3000:3000 \
+            -e DB_HOST=lab8-postgres \
+            -e DB_USER=postgres \
+            -e DB_PASS=secret \
+            -e DB_NAME=lab8 \
+            -e DB_PORT=5432 \
+            ${{ secrets.DOCKERHUB_USERNAME }}/lab8-app:latest \
+            sh -c "until pg_isready -h lab8-postgres -p 5432 -U postgres; do echo 'waiting for db'; sleep 2; done; node app.js"
                         
