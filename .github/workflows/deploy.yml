@@ -39,7 +39,33 @@ jobs:
           key:      ${{ secrets.EC2_KEY }}
           script: |
             cd ~/lab8-cicd
-            git pull 
-            docker stop lab8-app || true
-            docker rm lab8-app || true
-            docker run -d --name lab8-app -p 3000:3000 ${{ secrets.DOCKERHUB_USERNAME }}/lab8-app:latest
+            git pull
+
+            # Clean up
+            docker stop $(docker ps -q) || true
+            docker rm $(docker ps -aq) || true
+
+            # Create network
+            docker network create lab8-net || true
+
+            # Run Postgres
+            docker run -d \
+              --name lab8-postgres \
+              --network lab8-net \
+              -e POSTGRES_USER=postgres \
+              -e POSTGRES_PASSWORD=secret \
+              -e POSTGRES_DB=lab8 \
+              postgres:15
+
+            # Run App
+            docker run -d \
+              --name lab8-app \
+              --network lab8-net \
+              -p 3000:3000 \
+              -e DB_HOST=lab8-postgres \
+              -e DB_USER=postgres \
+              -e DB_PASS=secret \
+              -e DB_NAME=lab8 \
+              -e DB_PORT=5432 \
+              ${{ secrets.DOCKERHUB_USERNAME }}/lab8-app:latest
+                        
