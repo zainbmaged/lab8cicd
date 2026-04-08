@@ -52,12 +52,15 @@ jobs:
 
             # Run Postgres
             docker run -d \
-              --name lab8-postgres \
-              --network lab8-net \
-              -e POSTGRES_USER=postgres \
-              -e POSTGRES_PASSWORD=secret \
-              -e POSTGRES_DB=lab8 \
-              postgres:15
+            --name lab8-postgres \
+            --network lab8-net \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_PASSWORD=secret \
+            -e POSTGRES_DB=lab8 \
+            -v ~/lab8-cicd/init.sql:/docker-entrypoint-initdb.d/init.sql \
+            postgres:15
+
+            sleep 5
 
             docker run -d \
             --name lab8-app \
