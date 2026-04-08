@@ -39,7 +39,7 @@ jobs:
           key:      ${{ secrets.EC2_KEY }}
           script: |
             cd ~/lab8-cicd
-            git pull ${{ secrets.DOCKERHUB_USERNAME }}/lab8-app:latest
-            docker stop myapp || true
-            docker rm myapp || true
-            docker run -d --name myapp -p 3000:3000 ${{ secrets.DOCKERHUB_USERNAME }}/lab8-app:latest
+            git pull 
+            docker stop lab8-app || true
+            docker rm lab8-app || true
+            docker run -d --name lab8-app -p 3000:3000 ${{ secrets.DOCKERHUB_USERNAME }}/lab8-app:latest
