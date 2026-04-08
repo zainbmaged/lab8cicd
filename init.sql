@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS tasks (
+ init CREATE TABLE IF NOT EXISTS tasks (
   id     SERIAL PRIMARY KEY,
   name   VARCHAR(100) NOT NULL,
   status VARCHAR(20)  NOT NULL
@@ -10,4 +10,5 @@ INSERT INTO tasks (name, status) VALUES
   ('Bread',        'pending'),
   ('Butter',       'pending'),
   ('Orange juice', 'pending'),
-  ('Tea',          'pending');
+  ('Tea',          'pending'),
+  ('Tea with sugar',       'pending');
