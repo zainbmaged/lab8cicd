@@ -20,7 +20,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DB_HOST: db        
+      DB_HOST: lab8-postgres       
       DB_USER: postgres
       DB_PASS: secret
       DB_NAME: lab8

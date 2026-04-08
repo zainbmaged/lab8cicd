@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 
 app.get('/tasks', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM tasks ORDER BY id');
+    const result = await pool.query('SELECT * FROM tasks');
     res.json(result.rows);
   } catch (err) {
     console.error(err);
