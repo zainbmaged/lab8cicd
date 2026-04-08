@@ -20,14 +20,23 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DB_HOST: db       # must match service name of Postgres
+      DB_HOST: db
       DB_USER: postgres
       DB_PASS: secret
       DB_NAME: lab8
       DB_PORT: 5432
     depends_on:
       - db
-    command: ["sh", "-c", "until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USER; do echo 'Waiting for Postgres...'; sleep 2; done; node app.js"]
+    command: >
+      sh -c "
+        until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USER; do
+          echo 'Waiting for Postgres...';
+          sleep 2;
+        done;
+        echo 'Postgres is ready — starting app';
+        node app.js
+      "
 
 volumes:
-  db_data:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
