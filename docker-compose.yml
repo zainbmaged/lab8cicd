@@ -1,0 +1,32 @@
+services:
+ 
+  db:
+    image: postgres:15
+    container_name: lab8-postgres
+    restart: always
+    environment:
+      POSTGRES_USER:     postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB:       lab8
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    # Port 5432 is NOT exposedpublicly — only accessible inside Docker network
+ 
+  app:
+    image: zainbmaged114/lab8-app:latest
+    container_name: lab8-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db        
+      DB_USER: postgres
+      DB_PASS: secret
+      DB_NAME: lab8
+      DB_PORT: 5432
+    depends_on:
+      - db
+ 
+volumes:
+  db_data:

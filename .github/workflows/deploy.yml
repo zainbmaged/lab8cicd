@@ -1,0 +1,45 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5  
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v4  
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4  # optional, ensures buildx is configured
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7  # Latest release supporting Node.js24 :contentReference[oaicite:4]{index=4}
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/lab8-app:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host:     ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key:      ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/lab8-cicd
+            git pull
+            docker compose pull
+            docker compose down
+            docker compose up -d
