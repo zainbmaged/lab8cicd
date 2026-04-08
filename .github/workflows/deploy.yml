@@ -48,6 +48,7 @@ jobs:
 
             # Create network
             docker network create lab8-net || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/lab8-app:latest
 
             # Run Postgres
             docker run -d \
