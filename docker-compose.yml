@@ -1,32 +1,33 @@
+version: "3.9"
+
 services:
- 
   db:
     image: postgres:15
     container_name: lab8-postgres
     restart: always
     environment:
-      POSTGRES_USER:     postgres
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
-      POSTGRES_DB:       lab8
+      POSTGRES_DB: lab8
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    # Port 5432 is NOT exposedpublicly — only accessible inside Docker network
- 
+
   app:
-    image: zainbmaged114/lab8-app:latest
+    build: .
     container_name: lab8-app
     restart: always
     ports:
       - "3000:3000"
     environment:
-      DB_HOST: lab8-postgres       
+      DB_HOST: db       # must match service name of Postgres
       DB_USER: postgres
       DB_PASS: secret
       DB_NAME: lab8
       DB_PORT: 5432
     depends_on:
       - db
- 
+    command: ["sh", "-c", "until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USER; do echo 'Waiting for Postgres...'; sleep 2; done; node app.js"]
+
 volumes:
   db_data:
