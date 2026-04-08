@@ -40,6 +40,7 @@ jobs:
           script: |
             cd ~/lab8-cicd
             git pull
+            docker volume rm $(docker volume ls -q) || true
 
             # Clean up
             docker stop $(docker ps -q) || true
